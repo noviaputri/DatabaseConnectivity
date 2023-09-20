@@ -2,20 +2,79 @@
 
 public class Program
 {
-    public static class DatabaseHelper
+    public static bool MenuGetAll(string input)
     {
-        public static string ConnectionString { get; } = "Data Source=LAPTOP-LFKIL3TQ;Integrated Security=True;Database=db_hr_dts;Connect Timeout=30;";
+        switch (input)
+        {
+            case "1":
+                var region = new Region();
+                var regions = region.GetAll();
+                GeneralMenu.List(regions, "regions");
+                break;
+            case "2":
+                var country = new Country();
+                var countries = country.GetAll();
+                GeneralMenu.List(countries, "countries");
+                break;
+            case "3":
+                var location = new Location();
+                var locations = location.GetAll();
+                GeneralMenu.List(locations, "locations");
+                break;
+            case "4":
+                var job = new Job();
+                var jobs = job.GetAll();
+                GeneralMenu.List(jobs, "jobs");
+                break;
+            case "5":
+                var department = new Department();
+                var departments = department.GetAll();
+                GeneralMenu.List(departments, "departments");
+                break;
+            case "6":
+                var employee = new Employee();
+                var employees = employee.GetAll();
+                GeneralMenu.List(employees, "employees");
+                break;
+            case "7":
+                var history = new History();
+                var histories = history.GetAll();
+                GeneralMenu.List(histories, "histories");
+                break;
+            case "8":
+                return false;
+            default:
+                Console.WriteLine("Invalid choice");
+                break;
+        }
+        return true;
     }
 
     private static void Main()
     {
-        var region = new Region();
-        var country = new Country();
-        var location = new Location();
-        var job = new Job();
-        var department = new Department();
-        var employee = new Employee();
-        var history = new History();
+        var choice = true;
+        while (choice)
+        {
+            Console.WriteLine("1. List all regions");
+            Console.WriteLine("2. List all countries");
+            Console.WriteLine("3. List all locations");
+            Console.WriteLine("4. List all jobs");
+            Console.WriteLine("5. List all departments");
+            Console.WriteLine("6. List all employees");
+            Console.WriteLine("7. List all histories");
+            Console.WriteLine("8. Exit");
+            Console.Write("Enter your choice: ");
+            var input = Console.ReadLine();
+            choice = MenuGetAll(input);
+        }
+
+        //var region = new Region();
+        //var country = new Country();
+        //var location = new Location();
+        //var job = new Job();
+        //var department = new Department();
+        //var employee = new Employee();
+        //var history = new History();
 
         // REGION
         /*
@@ -41,7 +100,7 @@ public class Program
         string name = result.Name;
         // Use the retrieved data as needed
         Console.WriteLine($"Id: {id}, Name: {name}");
-        */ 
+        */
 
         /*
         // Insert Region
@@ -70,8 +129,9 @@ public class Program
             Console.WriteLine(updateResult);
         }
         */
-        
+
         // Delete Region
+        /*
         var deleteResult = region.Delete(26);
         int.TryParse(deleteResult, out int resultDelete);
         if (resultDelete > 0)
@@ -82,9 +142,7 @@ public class Program
         {
             Console.WriteLine("Delete Failed");
             Console.WriteLine(deleteResult);
-        }
-        
-
+        }*/
 
 
         // COUNTRY
@@ -418,7 +476,7 @@ public class Program
         }*/
 
         // HISTORY
-    
+
         /*
         var getAllHistory = history.GetAll();
         if (getAllHistory.Count > 0)

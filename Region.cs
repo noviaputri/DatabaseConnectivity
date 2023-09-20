@@ -1,8 +1,4 @@
-﻿using System.Data;
-using System.Data.SqlClient;
-using static BasicConnectivity.Program;
-
-namespace BasicConnectivity;
+﻿namespace BasicConnectivity;
 
 public class Region
 {
@@ -11,18 +7,19 @@ public class Region
     // The Name property of the Region class
     public string Name { get; set; }
 
-    // The connection string to the database
-    private readonly string connectionString = DatabaseHelper.ConnectionString;
+    public override string ToString()
+    {
+        return $"{Id} - {Name}";
+    }
 
     // GET ALL: Region
     public List<Region> GetAll()
     {
         var regions = new List<Region>();
 
-        // Create a new SqlConnection object using the connection string
-        using var connection = new SqlConnection(connectionString);
-        // Create a new SqlCommand object
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
+
         // Set the connection property of the command object to the SqlConnection object
         command.Connection = connection;
         // Set the command text to select all rows from the 'regions' table
@@ -67,8 +64,8 @@ public class Region
     // GET BY ID: Region
     public Region GetById(int id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         // Set the SQL command text to select rows from the 'regions' table with given id
@@ -76,13 +73,7 @@ public class Region
 
         try
         {
-            // Create a new SQL parameter for the 'id' value
-            var pId = new SqlParameter();
-            pId.ParameterName = "@id";
-            pId.Value = id;
-            pId.SqlDbType = SqlDbType.Int;
-            // Add the parameter to the command object's parameters collection
-            command.Parameters.Add(pId);
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 
@@ -117,8 +108,8 @@ public class Region
     // INSERT: Region
     public string Insert(string name)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         // Set the SQL command text to insert data in the 'regions' table with given name
@@ -126,7 +117,7 @@ public class Region
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@name", name));
+            command.Parameters.Add(Provider.SetParameter("name", name));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -156,8 +147,8 @@ public class Region
     // UPDATE: Region
     public string Update(int id, string name)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         // Set the SQL command text to update the 'name' column in the 'regions' table with given id
@@ -165,20 +156,8 @@ public class Region
 
         try
         {
-            // Create new SQL parameters for the 'id' and 'name' values
-            var pId = new SqlParameter();
-            pId.ParameterName = "@id";
-            pId.Value = id;
-            pId.SqlDbType = SqlDbType.Int;
-
-            var pName = new SqlParameter();
-            pName.ParameterName = "@name";
-            pName.Value = name;
-            pName.SqlDbType = SqlDbType.VarChar;
-
-            // Add the parameters to the command object's parameters collection
-            command.Parameters.Add(pId);
-            command.Parameters.Add(pName);
+            command.Parameters.Add(Provider.SetParameter("id", id));
+            command.Parameters.Add(Provider.SetParameter("name", name));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -210,8 +189,8 @@ public class Region
     // DELETE: Region
     public string Delete(int id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         // Set the SQL command text to delete rows from the 'regions' table with given id
@@ -219,13 +198,7 @@ public class Region
 
         try
         {
-            // Create a new SQL parameter for the 'id' value
-            var pId = new SqlParameter();
-            pId.ParameterName = "@id";
-            pId.Value = id;
-            pId.SqlDbType = SqlDbType.Int;
-            // Add the parameter to the command object's parameters collection
-            command.Parameters.Add(pId);
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 

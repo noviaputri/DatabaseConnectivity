@@ -1,7 +1,4 @@
-﻿using System.Data.SqlClient;
-using static BasicConnectivity.Program;
-
-namespace BasicConnectivity;
+﻿namespace BasicConnectivity;
 
 public class Department
 {
@@ -10,15 +7,18 @@ public class Department
     public int LocationId { get; set; }
     public int ManagerId { get; set; }
 
-    private readonly string connectionString = DatabaseHelper.ConnectionString;
+    public override string ToString()
+    {
+        return $"{Id} - {Name} - {LocationId} - {ManagerId}";
+    }
 
     // GET ALL: Department
     public List<Department> GetAll()
     {
         var departments = new List<Department>();
 
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "SELECT * FROM departments";
@@ -61,15 +61,15 @@ public class Department
     // GET BY ID: Department
     public Department GetById(int id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "SELECT * FROM departments WHERE id = @id;";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 
@@ -106,18 +106,18 @@ public class Department
     // INSERT: Department
     public string Insert(int id, string name, int location_id, int manager_id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "INSERT INTO departments (id, name, location_id, manager_id) VALUES (@id, @name, @location_id, @manager_id);";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
-            command.Parameters.Add(new SqlParameter("@name", name));
-            command.Parameters.Add(new SqlParameter("@location_id", location_id));
-            command.Parameters.Add(new SqlParameter("@manager_id", manager_id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
+            command.Parameters.Add(Provider.SetParameter("name", name));
+            command.Parameters.Add(Provider.SetParameter("location_id", location_id));
+            command.Parameters.Add(Provider.SetParameter("manager_id", manager_id));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -147,18 +147,18 @@ public class Department
     // UPDATE: Department
     public string Update(int id, string name, int location_id, int manager_id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "UPDATE departments SET name = @name, location_id = @location_id, manager_id = @manager_id WHERE id = @id;";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
-            command.Parameters.Add(new SqlParameter("@name", name));
-            command.Parameters.Add(new SqlParameter("@location_id", location_id));
-            command.Parameters.Add(new SqlParameter("@manager_id", manager_id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
+            command.Parameters.Add(Provider.SetParameter("name", name));
+            command.Parameters.Add(Provider.SetParameter("location_id", location_id));
+            command.Parameters.Add(Provider.SetParameter("manager_id", manager_id));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -190,8 +190,8 @@ public class Department
     // DELETE: Department
     public string Delete(int id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "DELETE FROM departments WHERE id = @id;";
@@ -199,7 +199,7 @@ public class Department
         try
         {
             // Create a new SQL parameter for the 'id' value
-            command.Parameters.Add(new SqlParameter("@id", id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 

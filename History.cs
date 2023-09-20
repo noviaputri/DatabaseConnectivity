@@ -1,7 +1,4 @@
-﻿using System.Data.SqlClient;
-using static BasicConnectivity.Program;
-
-namespace BasicConnectivity;
+﻿namespace BasicConnectivity;
 
 public class History
 {
@@ -11,15 +8,18 @@ public class History
     public int DepartmentId { get; set; }
     public string JobId { get; set; }
 
-    private readonly string connectionString = DatabaseHelper.ConnectionString;
+    public override string ToString()
+    {
+        return $"{StartDate} - {EmployeeId} - {EndDate} - {DepartmentId} - {JobId}";
+    }
 
     // GET ALL: History
     public List<History> GetAll()
     {
         var histories = new List<History>();
 
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "SELECT * FROM histories";
@@ -64,15 +64,15 @@ public class History
     // GET BY ID: History
     public History GetById(int employee_id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "SELECT * FROM histories WHERE employee_id = @employee_id;";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@employee_id", employee_id));
+            command.Parameters.Add(Provider.SetParameter("employee_id", employee_id));
 
             connection.Open();
 
@@ -110,19 +110,19 @@ public class History
     // INSERT: History
     public string Insert(DateTime start_date, int employee_id, DateTime end_date, int department_id, string job_id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "INSERT INTO histories (start_date, employee_id, end_date, department_id, job_id) VALUES (@start_date, @employee_id, @end_date, @department_id, @job_id);";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@start_date", start_date));
-            command.Parameters.Add(new SqlParameter("@employee_id", employee_id));
-            command.Parameters.Add(new SqlParameter("@end_date", end_date));
-            command.Parameters.Add(new SqlParameter("@department_id", department_id));
-            command.Parameters.Add(new SqlParameter("@job_id", job_id));
+            command.Parameters.Add(Provider.SetParameter("start_date", start_date));
+            command.Parameters.Add(Provider.SetParameter("employee_id", employee_id));
+            command.Parameters.Add(Provider.SetParameter("end_date", end_date));
+            command.Parameters.Add(Provider.SetParameter("department_id", department_id));
+            command.Parameters.Add(Provider.SetParameter("job_id", job_id));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -152,19 +152,19 @@ public class History
     // UPDATE: History
     public string Update(int employee_id, DateTime end_date, int department_id, string job_id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "UPDATE histories SET end_date = @end_date, department_id = @department_id, job_id = @job_id WHERE employee_id = @employee_id;";
 
         try
         {
-            //command.Parameters.Add(new SqlParameter("@start_date", start_date));
-            command.Parameters.Add(new SqlParameter("@employee_id", employee_id));
-            command.Parameters.Add(new SqlParameter("@end_date", end_date));
-            command.Parameters.Add(new SqlParameter("@department_id", department_id));
-            command.Parameters.Add(new SqlParameter("@job_id", job_id));
+            //command.Parameters.Add(Provider.SetParameter("start_date", start_date));
+            command.Parameters.Add(Provider.SetParameter("employee_id", employee_id));
+            command.Parameters.Add(Provider.SetParameter("end_date", end_date));
+            command.Parameters.Add(Provider.SetParameter("department_id", department_id));
+            command.Parameters.Add(Provider.SetParameter("job_id", job_id));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -196,8 +196,8 @@ public class History
     // DELETE: History
     public string Delete(int employee_id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "DELETE FROM histories WHERE employee_id = @employee_id;";
@@ -205,7 +205,7 @@ public class History
         try
         {
             // Create a new SQL parameter for the 'employee_id' value
-            command.Parameters.Add(new SqlParameter("@employee_id", employee_id));
+            command.Parameters.Add(Provider.SetParameter("employee_id", employee_id));
 
             connection.Open();
 

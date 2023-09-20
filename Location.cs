@@ -1,8 +1,4 @@
-﻿using System.Data;
-using System.Data.SqlClient;
-using static BasicConnectivity.Program;
-
-namespace BasicConnectivity;
+﻿namespace BasicConnectivity;
 
 public class Location
 {
@@ -13,15 +9,18 @@ public class Location
     public string StateProvince { get; set; }
     public string CountryId { get; set; }
 
-    private readonly string connectionString = DatabaseHelper.ConnectionString;
+    public override string ToString()
+    {
+        return $"{Id} - {StreetAddress} - {PostalCode} - {City} - {StateProvince} - {CountryId}";
+    }
 
     // GET ALL: Location
     public List<Location> GetAll()
     {
         var locations = new List<Location>();
 
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "SELECT * FROM locations";
@@ -66,15 +65,15 @@ public class Location
     // GET BY ID: Location
     public Location GetById(int id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "SELECT * FROM locations WHERE id = @id;";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 
@@ -113,20 +112,20 @@ public class Location
     // INSERT: Location
     public string Insert(int id, string street_address, string postal_code, string city, string state_province, string country_id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "INSERT INTO locations (id, street_address, postal_code, city, state_province, country_id) VALUES (@id, @street_address, @postal_code, @city, @state_province, @country_id);";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
-            command.Parameters.Add(new SqlParameter("@street_address", street_address));
-            command.Parameters.Add(new SqlParameter("@postal_code", postal_code));
-            command.Parameters.Add(new SqlParameter("@city", city));
-            command.Parameters.Add(new SqlParameter("@state_province", state_province));
-            command.Parameters.Add(new SqlParameter("@country_id", country_id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
+            command.Parameters.Add(Provider.SetParameter("street_address", street_address));
+            command.Parameters.Add(Provider.SetParameter("postal_code", postal_code));
+            command.Parameters.Add(Provider.SetParameter("city", city));
+            command.Parameters.Add(Provider.SetParameter("state_province", state_province));
+            command.Parameters.Add(Provider.SetParameter("country_id", country_id));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -156,20 +155,20 @@ public class Location
     // UPDATE: Location
     public string Update(int id, string street_address, string postal_code, string city, string state_province, string country_id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "UPDATE locations SET street_address = @street_address, postal_code = @postal_code, city = @city, state_province = @state_province, country_id = @country_id WHERE id = @id;";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
-            command.Parameters.Add(new SqlParameter("@street_address", street_address));
-            command.Parameters.Add(new SqlParameter("@postal_code", postal_code));
-            command.Parameters.Add(new SqlParameter("@city", city));
-            command.Parameters.Add(new SqlParameter("@state_province", state_province));
-            command.Parameters.Add(new SqlParameter("@country_id", country_id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
+            command.Parameters.Add(Provider.SetParameter("street_address", street_address));
+            command.Parameters.Add(Provider.SetParameter("postal_code", postal_code));
+            command.Parameters.Add(Provider.SetParameter("city", city));
+            command.Parameters.Add(Provider.SetParameter("state_province", state_province));
+            command.Parameters.Add(Provider.SetParameter("country_id", country_id));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -201,8 +200,8 @@ public class Location
     // DELETE: Location
     public string Delete(int id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         // Set the SQL command text to delete rows from the 'regions' table with given id
@@ -211,7 +210,7 @@ public class Location
         try
         {
             // Create a new SQL parameter for the 'id' value
-            command.Parameters.Add(new SqlParameter("@id", id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 

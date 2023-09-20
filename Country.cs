@@ -1,8 +1,4 @@
-﻿using System.Data;
-using System.Data.SqlClient;
-using static BasicConnectivity.Program;
-
-namespace BasicConnectivity;
+﻿namespace BasicConnectivity;
 
 public class Country
 {
@@ -10,15 +6,18 @@ public class Country
     public string Name { get; set; }
     public int RegionId { get; set; }
 
-    private readonly string connectionString = DatabaseHelper.ConnectionString;
+    public override string ToString()
+    {
+        return $"{Id} - {Name} - {RegionId}";
+    }
 
     // GET ALL: Country
     public List<Country> GetAll()
     {
         var countries = new List<Country>();
 
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "SELECT * FROM countries";
@@ -60,8 +59,8 @@ public class Country
     // GET BY ID: Country
     public Country GetById(string id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         // Set the SQL command text to select rows from the 'countries' table with given id
@@ -69,13 +68,7 @@ public class Country
 
         try
         {
-            // Create a new SQL parameter for the 'id' value
-            var pId = new SqlParameter();
-            pId.ParameterName = "@id";
-            pId.Value = id;
-            pId.SqlDbType = SqlDbType.Char;
-            // Add the parameter to the command object's parameters collection
-            command.Parameters.Add(pId);
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 
@@ -112,17 +105,17 @@ public class Country
     // INSERT: Country
     public string Insert(string id, string name, int region_id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "INSERT INTO countries (id, name, region_id) VALUES (@id, @name, @region_id);";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
-            command.Parameters.Add(new SqlParameter("@name", name));
-            command.Parameters.Add(new SqlParameter("@region_id", region_id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
+            command.Parameters.Add(Provider.SetParameter("name", name));
+            command.Parameters.Add(Provider.SetParameter("region_id", region_id));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -152,17 +145,17 @@ public class Country
     // UPDATE: Country
     public string Update(string id, string name, int region_id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "UPDATE countries SET name = @name, region_id = @region_id WHERE id = @id;";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
-            command.Parameters.Add(new SqlParameter("@name", name));
-            command.Parameters.Add(new SqlParameter("@region_id", region_id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
+            command.Parameters.Add(Provider.SetParameter("name", name));
+            command.Parameters.Add(Provider.SetParameter("region_id", region_id));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -194,8 +187,8 @@ public class Country
     // DELETE: Country
     public string Delete(string id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         // Set the SQL command text to delete rows from the 'regions' table with given id
@@ -204,7 +197,7 @@ public class Country
         try
         {
             // Create a new SQL parameter for the 'id' value
-            command.Parameters.Add(new SqlParameter("@id", id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 

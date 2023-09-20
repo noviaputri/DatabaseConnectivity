@@ -1,7 +1,4 @@
-﻿using System.Data.SqlClient;
-using static BasicConnectivity.Program;
-
-namespace BasicConnectivity;
+﻿namespace BasicConnectivity;
 
 public class Employee
 {
@@ -17,15 +14,18 @@ public class Employee
     public string JobId { get; set; }
     public int DepartmentId { get; set; }
 
-    private readonly string connectionString = DatabaseHelper.ConnectionString;
+    public override string ToString()
+    {
+        return $"{Id} - {FirstName} - {LastName} - {Email} - {PhoneNumber} - {HireDate} - {Salary} - {ComissionPct} - {ManagerId} - {JobId} - {DepartmentId}";
+    }
 
     // GET ALL: Employee
     public List<Employee> GetAll()
     {
         var employees = new List<Employee>();
 
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "SELECT * FROM employees";
@@ -75,15 +75,15 @@ public class Employee
     // GET BY ID: Employee
     public Employee GetById(int id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "SELECT * FROM employees WHERE id = @id;";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 
@@ -127,25 +127,25 @@ public class Employee
     // INSERT: Employee
     public string Insert(int id, string first_name, string last_name, string email, string phone_number, DateTime hire_date, int salary, decimal comission_pct , int manager_id, string job_id, int department_id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "INSERT INTO employees (id, first_name, last_name, email, phone_number, hire_date, salary, comission_pct, manager_id, job_id, department_id) VALUES (@id, @first_name, @last_name, @email, @phone_number , @hire_date , @salary , @comission_pct, @manager_id , @job_id , @department_id);";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
-            command.Parameters.Add(new SqlParameter("@first_name", first_name));
-            command.Parameters.Add(new SqlParameter("@last_name", last_name));
-            command.Parameters.Add(new SqlParameter("@email", email));
-            command.Parameters.Add(new SqlParameter("@phone_number", phone_number));
-            command.Parameters.Add(new SqlParameter("@hire_date", hire_date));
-            command.Parameters.Add(new SqlParameter("@salary", salary));
-            command.Parameters.Add(new SqlParameter("@comission_pct", comission_pct));
-            command.Parameters.Add(new SqlParameter("@manager_id", manager_id));
-            command.Parameters.Add(new SqlParameter("@job_id", job_id));
-            command.Parameters.Add(new SqlParameter("@department_id", department_id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
+            command.Parameters.Add(Provider.SetParameter("first_name", first_name));
+            command.Parameters.Add(Provider.SetParameter("last_name", last_name));
+            command.Parameters.Add(Provider.SetParameter("email", email));
+            command.Parameters.Add(Provider.SetParameter("phone_number", phone_number));
+            command.Parameters.Add(Provider.SetParameter("hire_date", hire_date));
+            command.Parameters.Add(Provider.SetParameter("salary", salary));
+            command.Parameters.Add(Provider.SetParameter("comission_pct", comission_pct));
+            command.Parameters.Add(Provider.SetParameter("manager_id", manager_id));
+            command.Parameters.Add(Provider.SetParameter("job_id", job_id));
+            command.Parameters.Add(Provider.SetParameter("department_id", department_id));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -175,25 +175,25 @@ public class Employee
     // UPDATE: Employee
     public string Update(int id, string first_name, string last_name, string email, string phone_number, DateTime hire_date, int salary, decimal comission_pct, int manager_id, string job_id, int department_id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "UPDATE employees SET first_name = @first_name, last_name = @last_name, email = @email, phone_number = @phone_number, hire_date = @hire_date, salary = @salary, comission_pct = @comission_pct, manager_id = @manager_id, job_id = @job_id, department_id = @department_id WHERE id = @id;";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
-            command.Parameters.Add(new SqlParameter("@first_name", first_name));
-            command.Parameters.Add(new SqlParameter("@last_name", last_name));
-            command.Parameters.Add(new SqlParameter("@email", email));
-            command.Parameters.Add(new SqlParameter("@phone_number", phone_number));
-            command.Parameters.Add(new SqlParameter("@hire_date", hire_date));
-            command.Parameters.Add(new SqlParameter("@salary", salary));
-            command.Parameters.Add(new SqlParameter("@comission_pct", comission_pct));
-            command.Parameters.Add(new SqlParameter("@manager_id", manager_id));
-            command.Parameters.Add(new SqlParameter("@job_id", job_id));
-            command.Parameters.Add(new SqlParameter("@department_id", department_id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
+            command.Parameters.Add(Provider.SetParameter("first_name", first_name));
+            command.Parameters.Add(Provider.SetParameter("last_name", last_name));
+            command.Parameters.Add(Provider.SetParameter("email", email));
+            command.Parameters.Add(Provider.SetParameter("phone_number", phone_number));
+            command.Parameters.Add(Provider.SetParameter("hire_date", hire_date));
+            command.Parameters.Add(Provider.SetParameter("salary", salary));
+            command.Parameters.Add(Provider.SetParameter("comission_pct", comission_pct));
+            command.Parameters.Add(Provider.SetParameter("manager_id", manager_id));
+            command.Parameters.Add(Provider.SetParameter("job_id", job_id));
+            command.Parameters.Add(Provider.SetParameter("department_id", department_id));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -225,8 +225,8 @@ public class Employee
     // DELETE: Employee
     public string Delete(int id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "DELETE FROM employees WHERE id = @id;";
@@ -234,7 +234,7 @@ public class Employee
         try
         {
             // Create a new SQL parameter for the 'id' value
-            command.Parameters.Add(new SqlParameter("@id", id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 

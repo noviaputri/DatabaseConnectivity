@@ -1,7 +1,4 @@
-﻿using System.Data.SqlClient;
-using static BasicConnectivity.Program;
-
-namespace BasicConnectivity;
+﻿namespace BasicConnectivity;
 
 public class Job
 {
@@ -10,15 +7,18 @@ public class Job
     public int MinSalary { get; set; }
     public int MaxSalary { get; set; }
 
-    private readonly string connectionString = DatabaseHelper.ConnectionString;
+    public override string ToString()
+    {
+        return $"{Id} - {Title} - {MinSalary} - {MaxSalary}";
+    }
 
     // GET ALL: Job
     public List<Job> GetAll()
     {
         var jobs = new List<Job>();
 
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "SELECT * FROM jobs";
@@ -62,15 +62,15 @@ public class Job
     // GET BY ID: Location
     public Job GetById(string id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "SELECT * FROM jobs WHERE id = @id;";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 
@@ -107,18 +107,18 @@ public class Job
     // INSERT: Job
     public string Insert(string id, string title, int min_salary, int max_salary)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "INSERT INTO jobs (id, title, min_salary, max_salary) VALUES (@id, @title, @min_salary, @max_salary);";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
-            command.Parameters.Add(new SqlParameter("@title", title));
-            command.Parameters.Add(new SqlParameter("@min_salary", min_salary));
-            command.Parameters.Add(new SqlParameter("@max_salary", max_salary));
+            command.Parameters.Add(Provider.SetParameter("id", id));
+            command.Parameters.Add(Provider.SetParameter("title", title));
+            command.Parameters.Add(Provider.SetParameter("min_salary", min_salary));
+            command.Parameters.Add(Provider.SetParameter("max_salary", max_salary));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -148,18 +148,18 @@ public class Job
     // UPDATE: Job
     public string Update(string id, string title, int min_salary, int max_salary)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "UPDATE jobs SET title = @title, min_salary = @min_salary, max_salary = @max_salary WHERE id = @id;";
 
         try
         {
-            command.Parameters.Add(new SqlParameter("@id", id));
-            command.Parameters.Add(new SqlParameter("@title", title));
-            command.Parameters.Add(new SqlParameter("@min_salary", min_salary));
-            command.Parameters.Add(new SqlParameter("@max_salary", max_salary));
+            command.Parameters.Add(Provider.SetParameter("id", id));
+            command.Parameters.Add(Provider.SetParameter("title", title));
+            command.Parameters.Add(Provider.SetParameter("min_salary", min_salary));
+            command.Parameters.Add(Provider.SetParameter("max_salary", max_salary));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -191,8 +191,8 @@ public class Job
     // DELETE: Job
     public string Delete(string id)
     {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
+        using var connection = Provider.GetConnection();
+        using var command = Provider.GetCommand();
 
         command.Connection = connection;
         command.CommandText = "DELETE FROM jobs WHERE id = @id;";
@@ -200,7 +200,7 @@ public class Job
         try
         {
             // Create a new SQL parameter for the 'id' value
-            command.Parameters.Add(new SqlParameter("@id", id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 
