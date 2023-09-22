@@ -1,26 +1,29 @@
-﻿namespace BasicConnectivity;
+﻿using BasicConnectivity;
 
-public class Country
+public class Location
 {
-    public string Id { get; set; }
-    public string Name { get; set; }
-    public int RegionId { get; set; }
+    public int Id { get; set; }
+    public string StreetAddress { get; set; }
+    public string PostalCode { get; set; }
+    public string City { get; set; }
+    public string StateProvince { get; set; }
+    public string CountryId { get; set; }
 
     public override string ToString()
     {
-        return $"{Id} - {Name} - {RegionId}";
+        return $"{Id} - {StreetAddress} - {PostalCode} - {City} - {StateProvince} - {CountryId}";
     }
 
-    // GET ALL: Country
-    public List<Country> GetAll()
+    // GET ALL: Location
+    public List<Location> GetAll()
     {
-        var countries = new List<Country>();
+        var locations = new List<Location>();
 
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        command.CommandText = "SELECT * FROM countries";
+        command.CommandText = "SELECT * FROM locations";
 
         try
         {
@@ -32,39 +35,41 @@ public class Country
             {
                 while (reader.Read())
                 {
-                    countries.Add(new Country
+                    locations.Add(new Location
                     {
-                        Id = reader.GetString(0),
-                        Name = reader.GetString(1),
-                        RegionId = reader.GetInt32(2)
+                        Id = reader.GetInt32(0),
+                        StreetAddress = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
+                        PostalCode = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
+                        City = reader.GetString(3),
+                        StateProvince = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
+                        CountryId = reader.GetString(5)
                     });
                 }
                 reader.Close();
                 connection.Close();
 
-                return countries;
+                return locations;
             }
             reader.Close();
             connection.Close();
 
-            return new List<Country>();
+            return new List<Location>();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
-        return new List<Country>();
+        return new List<Location>();
     }
 
-    // GET BY ID: Country
-    public Country GetById(string id)
+    // GET BY ID: Location
+    public Location GetById(int id)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        // Set the SQL command text to select rows from the 'countries' table with given id
-        command.CommandText = "SELECT * FROM countries WHERE id = @id;";
+        command.CommandText = "SELECT * FROM locations WHERE id = @id;";
 
         try
         {
@@ -76,17 +81,20 @@ public class Country
 
             if (reader.HasRows)
             {
-                Country country = new Country();
+                Location location = new Location();
 
                 while (reader.Read())
                 {
-                    country.Id = reader.GetString(0);
-                    country.Name = reader.GetString(1);
-                    country.RegionId = reader.GetInt32(2);
+                    location.Id = reader.GetInt32(0);
+                    location.StreetAddress = reader.IsDBNull(1) ? string.Empty : reader.GetString(1);
+                    location.PostalCode = reader.IsDBNull(2) ? string.Empty : reader.GetString(2);
+                    location.City = reader.GetString(3);
+                    location.StateProvince = reader.IsDBNull(4) ? string.Empty : reader.GetString(4);
+                    location.CountryId = reader.GetString(5);
                 }
                 reader.Close();
                 connection.Close();
-                return country;
+                return location;
             }
             else
             {
@@ -101,21 +109,23 @@ public class Country
         }
     }
 
-
-    // INSERT: Country
-    public string Insert(string id, string name, int region_id)
+    // INSERT: Location
+    public string Insert(Location location)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        command.CommandText = "INSERT INTO countries (id, name, region_id) VALUES (@id, @name, @region_id);";
+        command.CommandText = "INSERT INTO locations (id, street_address, postal_code, city, state_province, country_id) VALUES (@id, @street_address, @postal_code, @city, @state_province, @country_id);";
 
         try
         {
-            command.Parameters.Add(Provider.SetParameter("id", id));
-            command.Parameters.Add(Provider.SetParameter("name", name));
-            command.Parameters.Add(Provider.SetParameter("region_id", region_id));
+            command.Parameters.Add(Provider.SetParameter("id", location.Id));
+            command.Parameters.Add(Provider.SetParameter("street_address", location.StreetAddress));
+            command.Parameters.Add(Provider.SetParameter("postal_code", location.PostalCode));
+            command.Parameters.Add(Provider.SetParameter("city", location.City));
+            command.Parameters.Add(Provider.SetParameter("state_province", location.StateProvince));
+            command.Parameters.Add(Provider.SetParameter("country_id", location.CountryId));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -142,20 +152,23 @@ public class Country
         }
     }
 
-    // UPDATE: Country
-    public string Update(string id, string name, int region_id)
+    // UPDATE: Location
+    public string Update(Location location)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        command.CommandText = "UPDATE countries SET name = @name, region_id = @region_id WHERE id = @id;";
+        command.CommandText = "UPDATE locations SET street_address = @street_address, postal_code = @postal_code, city = @city, state_province = @state_province, country_id = @country_id WHERE id = @id;";
 
         try
         {
-            command.Parameters.Add(Provider.SetParameter("id", id));
-            command.Parameters.Add(Provider.SetParameter("name", name));
-            command.Parameters.Add(Provider.SetParameter("region_id", region_id));
+            command.Parameters.Add(Provider.SetParameter("id", location.Id));
+            command.Parameters.Add(Provider.SetParameter("street_address", location.StreetAddress));
+            command.Parameters.Add(Provider.SetParameter("postal_code", location.PostalCode));
+            command.Parameters.Add(Provider.SetParameter("city", location.City));
+            command.Parameters.Add(Provider.SetParameter("state_province", location.StateProvince));
+            command.Parameters.Add(Provider.SetParameter("country_id", location.CountryId));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -184,15 +197,15 @@ public class Country
         }
     }
 
-    // DELETE: Country
-    public string Delete(string id)
+    // DELETE: Location
+    public string Delete(int id)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
         // Set the SQL command text to delete rows from the 'regions' table with given id
-        command.CommandText = "DELETE FROM countries WHERE id = @id;";
+        command.CommandText = "DELETE FROM locations WHERE id = @id;";
 
         try
         {
@@ -226,5 +239,4 @@ public class Country
             return $"Error: {ex.Message}";
         }
     }
-
 }

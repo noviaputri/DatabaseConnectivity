@@ -1,4 +1,4 @@
-﻿namespace BasicConnectivity;
+﻿namespace DatabaseConnectivity.ViewModels;
 
 public class JoinBVM
 {

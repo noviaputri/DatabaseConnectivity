@@ -1,75 +1,70 @@
-﻿namespace BasicConnectivity;
+﻿using BasicConnectivity;
 
-public class Region
+public class Country
 {
-    // The Id property of the Region class
-    public int Id { get; set; }
-    // The Name property of the Region class
+    public string Id { get; set; }
     public string Name { get; set; }
+    public int RegionId { get; set; }
 
     public override string ToString()
     {
-        return $"{Id} - {Name}";
+        return $"{Id} - {Name} - {RegionId}";
     }
 
-    // GET ALL: Region
-    public List<Region> GetAll()
+    // GET ALL: Country
+    public List<Country> GetAll()
     {
-        var regions = new List<Region>();
+        var countries = new List<Country>();
 
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
-        // Set the connection property of the command object to the SqlConnection object
         command.Connection = connection;
-        // Set the command text to select all rows from the 'regions' table
-        command.CommandText = "SELECT * FROM regions";
+        command.CommandText = "SELECT * FROM countries";
 
         try
         {
-            // Open the database connection
             connection.Open();
-            // Execute the SQL query and retrieve a SqlDataReader object
+
             using var reader = command.ExecuteReader();
 
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    // Create a new Region object and populate its properties with data from the SqlDataReader object
-                    regions.Add(new Region
+                    countries.Add(new Country
                     {
-                        Id = reader.GetInt32(0),
-                        Name = reader.GetString(1)
+                        Id = reader.GetString(0),
+                        Name = reader.GetString(1),
+                        RegionId = reader.GetInt32(2)
                     });
                 }
                 reader.Close();
                 connection.Close();
 
-                return regions;
+                return countries;
             }
             reader.Close();
             connection.Close();
 
-            return new List<Region>();
+            return new List<Country>();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
-
-        return new List<Region>();
+        return new List<Country>();
     }
 
-    // GET BY ID: Region
-    public Region GetById(int id)
+    // GET BY ID: Country
+    public Country GetById(string id)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        // Set the SQL command text to select rows from the 'regions' table with given id
-        command.CommandText = "SELECT * FROM regions WHERE id = @id;";
+        // Set the SQL command text to select rows from the 'countries' table with given id
+        command.CommandText = "SELECT * FROM countries WHERE id = @id;";
 
         try
         {
@@ -81,16 +76,17 @@ public class Region
 
             if (reader.HasRows)
             {
-                Region region = new Region();
+                Country country = new Country();
 
                 while (reader.Read())
                 {
-                    region.Id = reader.GetInt32(0);
-                    region.Name = reader.GetString(1);
+                    country.Id = reader.GetString(0);
+                    country.Name = reader.GetString(1);
+                    country.RegionId = reader.GetInt32(2);
                 }
                 reader.Close();
                 connection.Close();
-                return region;
+                return country;
             }
             else
             {
@@ -105,19 +101,21 @@ public class Region
         }
     }
 
-    // INSERT: Region
-    public string Insert(string name)
+
+    // INSERT: Country
+    public string Insert(Country country)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        // Set the SQL command text to insert data in the 'regions' table with given name
-        command.CommandText = "INSERT INTO regions VALUES (@name);";
+        command.CommandText = "INSERT INTO countries (id, name, region_id) VALUES (@id, @name, @region_id);";
 
         try
         {
-            command.Parameters.Add(Provider.SetParameter("name", name));
+            command.Parameters.Add(Provider.SetParameter("id", country.Id));
+            command.Parameters.Add(Provider.SetParameter("name", country.Name));
+            command.Parameters.Add(Provider.SetParameter("region_id", country.RegionId));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -144,20 +142,20 @@ public class Region
         }
     }
 
-    // UPDATE: Region
-    public string Update(int id, string name)
+    // UPDATE: Country
+    public string Update(Country country)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        // Set the SQL command text to update the 'name' column in the 'regions' table with given id
-        command.CommandText = "UPDATE regions SET name = @name WHERE id = @id;";
+        command.CommandText = "UPDATE countries SET name = @name, region_id = @region_id WHERE id = @id;";
 
         try
         {
-            command.Parameters.Add(Provider.SetParameter("id", id));
-            command.Parameters.Add(Provider.SetParameter("name", name));
+            command.Parameters.Add(Provider.SetParameter("id", country.Id));
+            command.Parameters.Add(Provider.SetParameter("name", country.Name));
+            command.Parameters.Add(Provider.SetParameter("region_id", country.RegionId));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -170,7 +168,7 @@ public class Region
 
                 transaction.Commit();
                 connection.Close();
-                
+
                 return result.ToString();
             }
             catch (Exception ex)
@@ -186,18 +184,19 @@ public class Region
         }
     }
 
-    // DELETE: Region
-    public string Delete(int id)
+    // DELETE: Country
+    public string Delete(string id)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
         // Set the SQL command text to delete rows from the 'regions' table with given id
-        command.CommandText = "DELETE FROM regions WHERE id = @id;";
+        command.CommandText = "DELETE FROM countries WHERE id = @id;";
 
         try
         {
+            // Create a new SQL parameter for the 'id' value
             command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
@@ -227,4 +226,5 @@ public class Region
             return $"Error: {ex.Message}";
         }
     }
+
 }

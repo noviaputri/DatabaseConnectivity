@@ -1,9 +1,18 @@
-﻿namespace BasicConnectivity;
+﻿using DatabaseConnectivity;
+using DatabaseConnectivity.Controllers;
+using DatabaseConnectivity.ViewModels;
+using DatabaseConnectivity.Views;
+
+namespace BasicConnectivity;
 
 public class Program
 {
     public static bool MenuRegion()
     {
+        var region = new Region();
+        var regionView = new RegionView();
+        var regionController = new RegionController(region, regionView);
+
         Console.WriteLine("1. Show All Data Region");
         Console.WriteLine("2. Get Region By Id");
         Console.WriteLine("3. Insert Region");
@@ -12,44 +21,23 @@ public class Program
         Console.WriteLine("6. Exit");
         Console.Write("Enter your choice: ");
         var input = Console.ReadLine();
-        var region = new Region();
 
         switch (input)
         {
             case "1":
-                var regions = region.GetAll();
-                GeneralMenu.List(regions, "regions");
-                return true;
+                regionController.GetAll();
+                break;
             case "2":
-                Console.WriteLine("Enter Region Id : ");
-                int RegionId = Convert.ToInt32(Console.ReadLine());
-                Region result = region.GetById(RegionId);
-                int id = result.Id;
-                string name = result.Name;
-                Console.WriteLine($"Id: {id}, Name: {name}");
+                regionController.GetById();
                 break;
             case "3":
-                Console.WriteLine("Enter Region Name to Insert : ");
-                string RegionNameInsert = Console.ReadLine();
-                var insertResult = region.Insert(RegionNameInsert);
-                int.TryParse(insertResult, out int resultInsert);
-                GeneralMenu.PerformInsert(resultInsert);
+                regionController.Insert();
                 break;
             case "4":
-                Console.WriteLine("Enter Region Id to Update : ");
-                int RegionIdUpdate = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Region Name to Update : ");
-                string RegionNameUpdate = Console.ReadLine();
-                var updateResult = region.Update(RegionIdUpdate, RegionNameUpdate);
-                int.TryParse(updateResult, out int resultUpdate);
-                GeneralMenu.PerformUpdate(resultUpdate);
+                regionController.Update();
                 break;
             case "5":
-                Console.WriteLine("Enter Region Id to Delete: ");
-                int RegionIdDelete = Convert.ToInt32(Console.ReadLine());
-                var deleteResult = region.Delete(RegionIdDelete);
-                int.TryParse(deleteResult, out int resultDelete);
-                GeneralMenu.PerformDelete(resultDelete);
+                regionController.Delete();
                 break;
             case "6":
                 return false;
@@ -59,9 +47,13 @@ public class Program
         }
         return true;
     }
-
+    
     public static bool MenuCountry()
     {
+        var country = new Country();
+        var countryView = new CountryView();
+        var countryController = new CountryController(country, countryView);
+
         Console.WriteLine("1. Show All Data Country");
         Console.WriteLine("2. Get Country By Id");
         Console.WriteLine("3. Insert Country");
@@ -70,51 +62,23 @@ public class Program
         Console.WriteLine("6. Exit");
         Console.Write("Enter your choice: ");
         var input = Console.ReadLine();
-        var country = new Country();
 
         switch (input)
         {
             case "1":
-                var countries = country.GetAll();
-                GeneralMenu.List(countries, "countries");
-                return true;
+                countryController.GetAll();
+                break;
             case "2":
-                Console.WriteLine("Enter Country Id : ");
-                string CountryId = Console.ReadLine();
-                Country result = country.GetById(CountryId);
-                string id = result.Id;
-                string name = result.Name;
-                int region_id = result.RegionId;
-                Console.WriteLine($"Id: {id}, Name: {name}, Region Id : {region_id}");
+                countryController.GetById();
                 break;
             case "3":
-                Console.WriteLine("Enter Country Id to Insert : ");
-                string CountryIdInsert = Console.ReadLine();
-                Console.WriteLine("Enter Country Name to Insert : ");
-                string CountryNameInsert = Console.ReadLine();
-                Console.WriteLine("Enter Region Id to Insert : ");
-                int CountryRegionIdInsert = Convert.ToInt32(Console.ReadLine());
-                var insertResult = country.Insert(CountryIdInsert, CountryNameInsert, CountryRegionIdInsert);
-                int.TryParse(insertResult, out int resultInsert);
-                GeneralMenu.PerformInsert(resultInsert);
+                countryController.Insert();
                 break;
             case "4":
-                Console.WriteLine("Enter Country Id to Update : ");
-                string CountryIdUpdate = Console.ReadLine();
-                Console.WriteLine("Enter Country Name to Update : ");
-                string CountryNameUpdate = Console.ReadLine();
-                Console.WriteLine("Enter Region Id to Update : ");
-                int CountryRegionIdUpdate = Convert.ToInt32(Console.ReadLine());
-                var updateResult = country.Update(CountryIdUpdate, CountryNameUpdate, CountryRegionIdUpdate);
-                int.TryParse(updateResult, out int resultUpdate);
-                GeneralMenu.PerformUpdate(resultUpdate);
+                countryController.Update();
                 break;
             case "5":
-                Console.WriteLine("Enter Country Id to Delete : ");
-                string CountryIdDelete = Console.ReadLine();
-                var deleteResult = country.Delete(CountryIdDelete);
-                int.TryParse(deleteResult, out int resultDelete);
-                GeneralMenu.PerformDelete(resultDelete);
+                countryController.Delete();
                 break;
             case "6":
                 return false;
@@ -127,6 +91,10 @@ public class Program
 
     public static bool MenuLocation()
     {
+        var location = new Location();
+        var locationView = new LocationView();
+        var locationController = new LocationController(location, locationView);
+
         Console.WriteLine("1. Show All Data Location");
         Console.WriteLine("2. Get Location By Id");
         Console.WriteLine("3. Insert Location");
@@ -135,66 +103,23 @@ public class Program
         Console.WriteLine("6. Exit");
         Console.Write("Enter your choice: ");
         var input = Console.ReadLine();
-        var location = new Location();
 
         switch (input)
         {
             case "1":
-                var locations = location.GetAll();
-                GeneralMenu.List(locations, "locations");
-                return true;
+                locationController.GetAll();
+                break;
             case "2":
-                Console.WriteLine("Enter Location Id : ");
-                int LocationId = Convert.ToInt32(Console.ReadLine());
-                Location result = location.GetById(LocationId);
-                int id = result.Id;
-                string street_address = result.StreetAddress;
-                string postal_code = result.PostalCode;
-                string city = result.City;
-                string state_province = result.StateProvince;
-                string country_id = result.CountryId;
-                Console.WriteLine($"Id: {id}, Street Address: {street_address}, Postal Code : {postal_code}, City : {city}, State Province : {state_province}, Country Id : {country_id}");
+                locationController.GetById();
                 break;
             case "3":
-                Console.WriteLine("Enter Location Id to Insert : ");
-                int LocationIdInsert = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Street Address to Insert : ");
-                string LocationStreetInsert = Console.ReadLine();
-                Console.WriteLine("Enter Postal Code to Insert : ");
-                string LocationPostalCodeInsert = Console.ReadLine();
-                Console.WriteLine("Enter City to Insert : ");
-                string LocationCityInsert = Console.ReadLine();
-                Console.WriteLine("Enter State Province to Insert : ");
-                string LocationProvinceInsert = Console.ReadLine();
-                Console.WriteLine("Enter Country Id to Insert : ");
-                string LocationCountryIdInsert = Console.ReadLine();
-                var insertResult = location.Insert(LocationIdInsert, LocationStreetInsert, LocationPostalCodeInsert, LocationCityInsert, LocationProvinceInsert, LocationCountryIdInsert);
-                int.TryParse(insertResult, out int resultInsert);
-                GeneralMenu.PerformInsert(resultInsert);
+                locationController.Insert();
                 break;
             case "4":
-                Console.WriteLine("Enter Location Id to Update : ");
-                int LocationIdUpdate = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Street Address to Update : ");
-                string LocationStreetUpdate = Console.ReadLine();
-                Console.WriteLine("Enter Postal Code to Update : ");
-                string LocationPostalCodeUpdate = Console.ReadLine();
-                Console.WriteLine("Enter City to Update : ");
-                string LocationCityUpdate = Console.ReadLine();
-                Console.WriteLine("Enter State Province to Update : ");
-                string LocationProvinceUpdate = Console.ReadLine();
-                Console.WriteLine("Enter Country Id to Update : ");
-                string LocationCountryIdUpdate = Console.ReadLine();
-                var updateResult = location.Update(LocationIdUpdate, LocationStreetUpdate, LocationPostalCodeUpdate, LocationCityUpdate, LocationProvinceUpdate, LocationCountryIdUpdate);
-                int.TryParse(updateResult, out int resultUpdate);
-                GeneralMenu.PerformUpdate(resultUpdate);
+                locationController.Update();
                 break;
             case "5":
-                Console.WriteLine("Enter Location Id to Delete : ");
-                int LocationIdDelete = Convert.ToInt32(Console.ReadLine());
-                var deleteResult = location.Delete(LocationIdDelete);
-                int.TryParse(deleteResult, out int resultDelete);
-                GeneralMenu.PerformDelete(resultDelete);
+                locationController.Delete();
                 break;
             case "6":
                 return false;
@@ -205,6 +130,7 @@ public class Program
         return true;
     }
 
+    /*
     public static bool MenuJob()
     {
         Console.WriteLine("1. Show All Data Job");
@@ -221,7 +147,7 @@ public class Program
         {
             case "1":
                 var jobs = job.GetAll();
-                GeneralMenu.List(jobs, "jobs");
+                GeneralView.List(jobs, "jobs");
                 return true;
             case "2":
                 Console.WriteLine("Enter Job Id : ");
@@ -244,7 +170,7 @@ public class Program
                 int JobMaxSalaryInsert = Convert.ToInt32(Console.ReadLine());
                 var insertResult = job.Insert(JobIdInsert, JobTitleInsert, JobMinSalaryInsert, JobMaxSalaryInsert);
                 int.TryParse(insertResult, out int resultInsert);
-                GeneralMenu.PerformInsert(resultInsert);
+                GeneralView.PerformInsert(resultInsert);
                 break;
             case "4":
                 Console.WriteLine("Enter Job Id to Update : ");
@@ -257,14 +183,14 @@ public class Program
                 int JobMaxSalaryUpdate = Convert.ToInt32(Console.ReadLine());
                 var updateResult = job.Update(JobIdUpdate, JobTitleUpdate, JobMinSalaryUpdate, JobMaxSalaryUpdate);
                 int.TryParse(updateResult, out int resultUpdate);
-                GeneralMenu.PerformUpdate(resultUpdate);
+                GeneralView.PerformUpdate(resultUpdate);
                 break;
             case "5":
                 Console.WriteLine("Enter Job Id to Delete : ");
                 string JobIdDelete = Console.ReadLine();
                 var deleteResult = job.Delete(JobIdDelete);
                 int.TryParse(deleteResult, out int resultDelete);
-                GeneralMenu.PerformDelete(resultDelete);
+                GeneralView.PerformDelete(resultDelete);
                 break;
             case "6":
                 return false;
@@ -291,7 +217,7 @@ public class Program
         {
             case "1":
                 var departments = department.GetAll();
-                GeneralMenu.List(departments, "departments");
+                GeneralView.List(departments, "departments");
                 return true;
             case "2":
                 Console.WriteLine("Enter Department Id : ");
@@ -314,7 +240,7 @@ public class Program
                 int DepartmentManagerIdInsert = Convert.ToInt32(Console.ReadLine());
                 var insertResult = department.Insert(DepartmentIdInsert, DepartmentNameInsert, DepartmentLocationIdInsert, DepartmentManagerIdInsert);
                 int.TryParse(insertResult, out int resultInsert);
-                GeneralMenu.PerformInsert(resultInsert);
+                GeneralView.PerformInsert(resultInsert);
                 break;
             case "4":
                 Console.WriteLine("Enter Department Id to Insert : ");
@@ -327,14 +253,14 @@ public class Program
                 int DepartmentManagerIdUpdate = Convert.ToInt32(Console.ReadLine());
                 var updateResult = department.Update(DepartmentIdUpdate, DepartmentNameUpdate, DepartmentLocationIdUpdate, DepartmentManagerIdUpdate);
                 int.TryParse(updateResult, out int resultUpdate);
-                GeneralMenu.PerformUpdate(resultUpdate);
+                GeneralView.PerformUpdate(resultUpdate);
                 break;
             case "5":
                 Console.WriteLine("Enter Department Id to Delete : ");
                 int DepartmentIdDelete = Convert.ToInt32(Console.ReadLine());
                 var deleteResult = department.Delete(DepartmentIdDelete);
                 int.TryParse(deleteResult, out int resultDelete);
-                GeneralMenu.PerformDelete(resultDelete);
+                GeneralView.PerformDelete(resultDelete);
                 break;
             case "6":
                 return false;
@@ -361,7 +287,7 @@ public class Program
         {
             case "1":
                 var employees = employee.GetAll();
-                GeneralMenu.List(employees, "employees");
+                GeneralView.List(employees, "employees");
                 return true;
             case "2":
                 Console.WriteLine("Enter Employee Id : ");
@@ -407,7 +333,7 @@ public class Program
                 int EmployeeDepartmentIdInsert = Convert.ToInt32(Console.ReadLine());
                 var insertResult = employee.Insert(EmployeeIdInsert, EmployeeFirstNameInsert, EmployeeLastNameInsert, EmployeeEmailInsert, EmployeePhoneInsert, EmployeeHireDateInsert, EmployeeSalaryInsert, EmployeeComissionInsert, EmployeeManagerIdInsert, EmployeeJobIdInsert, EmployeeDepartmentIdInsert);
                 int.TryParse(insertResult, out int resultInsert);
-                GeneralMenu.PerformInsert(resultInsert);
+                GeneralView.PerformInsert(resultInsert);
                 break;
             case "4":
                 Console.WriteLine("Enter Employee Id to Insert : ");
@@ -434,14 +360,14 @@ public class Program
                 int EmployeeDepartmentIdUpdate = Convert.ToInt32(Console.ReadLine());
                 var updateResult = employee.Update(EmployeeIdUpdate, EmployeeFirstNameUpdate, EmployeeLastNameUpdate, EmployeeEmailUpdate, EmployeePhoneUpdate, EmployeeHireDateUpdate, EmployeeSalaryUpdate, EmployeeComissionUpdate, EmployeeManagerIdUpdate, EmployeeJobIdUpdate, EmployeeDepartmentIdUpdate);
                 int.TryParse(updateResult, out int resultUpdate);
-                GeneralMenu.PerformUpdate(resultUpdate);
+                GeneralView.PerformUpdate(resultUpdate);
                 break;
             case "5":
                 Console.WriteLine("Enter Employee Id to Delete : ");
                 int EmployeeIdDelete = Convert.ToInt32(Console.ReadLine());
                 var deleteResult = employee.Delete(EmployeeIdDelete);
                 int.TryParse(deleteResult, out int resultDelete);
-                GeneralMenu.PerformDelete(resultDelete);
+                GeneralView.PerformDelete(resultDelete);
                 break;
             case "6":
                 return false;
@@ -468,7 +394,7 @@ public class Program
         {
             case "1":
                 var histories = history.GetAll();
-                GeneralMenu.List(histories, "histories");
+                GeneralView.List(histories, "histories");
                 return true;
             case "2":
                 Console.WriteLine("Enter Employee Id : ");
@@ -494,7 +420,7 @@ public class Program
                 string HistoryJobIdInsert = Console.ReadLine();
                 var insertResult = history.Insert(HistoryStartDateInsert, HistoryEmployeeIdInsert, HistoryEndDateInsert, HistoryDepartmentIdInsert, HistoryJobIdInsert);
                 int.TryParse(insertResult, out int resultInsert);
-                GeneralMenu.PerformInsert(resultInsert);
+                GeneralView.PerformInsert(resultInsert);
                 break;
             case "4":
                 Console.WriteLine("Enter Employee Id to Update : ");
@@ -507,14 +433,14 @@ public class Program
                 string HistoryJobIdUpdate = Console.ReadLine();
                 var updateResult = history.Update(HistoryEmployeeIdUpdate, HistoryEndDateUpdate, HistoryDepartmentIdUpdate, HistoryJobIdUpdate);
                 int.TryParse(updateResult, out int resultUpdate);
-                GeneralMenu.PerformUpdate(resultUpdate);
+                GeneralView.PerformUpdate(resultUpdate);
                 break;
             case "5":
                 Console.WriteLine("Enter Employee Id to Delete : ");
                 int HistoryEmployeeIdDelete = Convert.ToInt32(Console.ReadLine());
                 var deleteResult = history.Delete(HistoryEmployeeIdDelete);
                 int.TryParse(deleteResult, out int resultDelete);
-                GeneralMenu.PerformDelete(resultDelete);
+                GeneralView.PerformDelete(resultDelete);
                 break;
             case "6":
                 return false;
@@ -523,6 +449,23 @@ public class Program
                 break;
         }
         return true;
+    }*/
+
+    static void AskToGoBackToMenu()
+    {
+        Console.Write("Do you want to go back to the menu? (yes/no): ");
+        string answer = Console.ReadLine();
+
+        if (answer.ToLower() == "yes")
+        {
+            // Clear the console and return to the menu
+            Console.Clear();
+        }
+        else
+        {
+            // Exit the program
+            Environment.Exit(0);
+        }
     }
 
     public static bool MainMenu(string input)
@@ -537,25 +480,39 @@ public class Program
         switch (input)
         {
             case "1":
+                Console.Clear();
                 MenuRegion();
+                AskToGoBackToMenu();
                 break;
             case "2":
+                Console.Clear();
                 MenuCountry();
+                AskToGoBackToMenu();
                 break;
             case "3":
+                Console.Clear();
                 MenuLocation();
+                AskToGoBackToMenu();
                 break;
             case "4":
-                MenuJob();
+                Console.Clear();
+                //MenuJob();
+                AskToGoBackToMenu();
                 break;
             case "5":
-                MenuDepartment();
+                Console.Clear();
+                //MenuDepartment();
+                AskToGoBackToMenu();
                 break;
             case "6":
-                MenuEmployee();
+                Console.Clear();
+                //MenuEmployee();
+                AskToGoBackToMenu();
                 break;
             case "7":
-                MenuHistory();
+                Console.Clear();
+                //MenuHistory();
+                AskToGoBackToMenu();
                 break;
             case "8":
                 // LINQ to Show Data A
@@ -590,7 +547,8 @@ public class Program
                         RegionName = r.Name
                     }).ToList();
                 // Display the result using the GeneralMenu.List method
-                GeneralMenu.List(resultJoinA, "Data A");
+                GeneralView generalViewA = new GeneralView();
+                generalViewA.List(resultJoinA, "Data A");
                 break;
             case "9":
                 // LINQ to Show Data B 
@@ -612,7 +570,8 @@ public class Program
                          AverageSalary = employeeDepartments.Average(e => e.Salary)
                      }).ToList();
                 // Display the result using the GeneralMenu.List method
-                GeneralMenu.List(resultJoinB, "Data B");
+                GeneralView generalViewB = new GeneralView();
+                generalViewB.List(resultJoinB, "Data B");
                 break;
             case "10":
                 return false;
@@ -645,5 +604,6 @@ public class Program
             var input = Console.ReadLine();
             choice = MainMenu(input);
         }
+        Console.WriteLine("Goodbye!");
     }
 }

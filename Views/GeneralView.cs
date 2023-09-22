@@ -1,8 +1,8 @@
-﻿namespace BasicConnectivity;
+﻿namespace DatabaseConnectivity;
 
-public class GeneralMenu
+public class GeneralView
 {
-    public static void List<T>(List<T> items, string title)
+    public void List<T>(List<T> items, string title)
     {
         Console.WriteLine($"List of {title}");
         Console.WriteLine("---------------------");
@@ -12,7 +12,14 @@ public class GeneralMenu
         }
     }
 
-    public static void PerformInsert(int resultInsert)
+    public void Single<T>(T item, string title)
+    {
+        Console.WriteLine($"List of {title}");
+        Console.WriteLine("---------------");
+        Console.WriteLine(item.ToString());
+    }
+
+    public void PerformInsert(int resultInsert)
     {
         if (resultInsert > 0)
         {
@@ -25,7 +32,7 @@ public class GeneralMenu
         }
     }
 
-    public static void PerformUpdate(int resultUpdate)
+    public void PerformUpdate(int resultUpdate)
     {
         if (resultUpdate > 0)
         {
@@ -38,7 +45,7 @@ public class GeneralMenu
         }
     }
 
-    public static void PerformDelete(int resultDelete)
+    public void PerformDelete(int resultDelete)
     {
         if (resultDelete > 0)
         {
@@ -48,6 +55,20 @@ public class GeneralMenu
         {
             Console.WriteLine("Delete Failed");
             Console.WriteLine(resultDelete);
+        }
+    }
+
+    public void Transaction(string result)
+    {
+        int.TryParse(result, out int res);
+        if (res > 0)
+        {
+            Console.WriteLine("Transaction completed successfully");
+        }
+        else
+        {
+            Console.WriteLine("Transaction failed");
+            Console.WriteLine(result);
         }
     }
 }

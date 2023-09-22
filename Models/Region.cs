@@ -1,75 +1,75 @@
-﻿namespace BasicConnectivity;
+﻿using BasicConnectivity;
 
-public class Location
+public class Region
 {
+    // The Id property of the Region class
     public int Id { get; set; }
-    public string StreetAddress { get; set; }
-    public string PostalCode { get; set; }
-    public string City { get; set; }
-    public string StateProvince { get; set; }
-    public string CountryId { get; set; }
+    // The Name property of the Region class
+    public string Name { get; set; }
 
     public override string ToString()
     {
-        return $"{Id} - {StreetAddress} - {PostalCode} - {City} - {StateProvince} - {CountryId}";
+        return $"{Id} - {Name}";
     }
 
-    // GET ALL: Location
-    public List<Location> GetAll()
+    // GET ALL: Region
+    public List<Region> GetAll()
     {
-        var locations = new List<Location>();
+        var regions = new List<Region>();
 
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
+        // Set the connection property of the command object to the SqlConnection object
         command.Connection = connection;
-        command.CommandText = "SELECT * FROM locations";
+        // Set the command text to select all rows from the 'regions' table
+        command.CommandText = "SELECT * FROM regions";
 
         try
         {
+            // Open the database connection
             connection.Open();
-
+            // Execute the SQL query and retrieve a SqlDataReader object
             using var reader = command.ExecuteReader();
 
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    locations.Add(new Location
+                    // Create a new Region object and populate its properties with data from the SqlDataReader object
+                    regions.Add(new Region
                     {
                         Id = reader.GetInt32(0),
-                        StreetAddress = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
-                        PostalCode = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
-                        City = reader.GetString(3),
-                        StateProvince = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
-                        CountryId = reader.GetString(5)
+                        Name = reader.GetString(1)
                     });
                 }
                 reader.Close();
                 connection.Close();
 
-                return locations;
+                return regions;
             }
             reader.Close();
             connection.Close();
 
-            return new List<Location>();
+            return new List<Region>();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
-        return new List<Location>();
+
+        return new List<Region>();
     }
 
-    // GET BY ID: Location
-    public Location GetById(int id)
+    // GET BY ID: Region
+    public Region GetById(int id)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        command.CommandText = "SELECT * FROM locations WHERE id = @id;";
+        // Set the SQL command text to select rows from the 'regions' table with given id
+        command.CommandText = "SELECT * FROM regions WHERE id = @id;";
 
         try
         {
@@ -81,20 +81,16 @@ public class Location
 
             if (reader.HasRows)
             {
-                Location location = new Location();
+                Region region = new Region();
 
                 while (reader.Read())
                 {
-                    location.Id = reader.GetInt32(0);
-                    location.StreetAddress = reader.IsDBNull(1) ? string.Empty : reader.GetString(1);
-                    location.PostalCode = reader.IsDBNull(2) ? string.Empty : reader.GetString(2);
-                    location.City = reader.GetString(3);
-                    location.StateProvince = reader.IsDBNull(4) ? string.Empty : reader.GetString(4);
-                    location.CountryId = reader.GetString(5);
+                    region.Id = reader.GetInt32(0);
+                    region.Name = reader.GetString(1);
                 }
                 reader.Close();
                 connection.Close();
-                return location;
+                return region;
             }
             else
             {
@@ -109,23 +105,19 @@ public class Location
         }
     }
 
-    // INSERT: Location
-    public string Insert(int id, string street_address, string postal_code, string city, string state_province, string country_id)
+    // INSERT: Region
+    public string Insert(string name)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        command.CommandText = "INSERT INTO locations (id, street_address, postal_code, city, state_province, country_id) VALUES (@id, @street_address, @postal_code, @city, @state_province, @country_id);";
+        // Set the SQL command text to insert data in the 'regions' table with given name
+        command.CommandText = "INSERT INTO regions VALUES (@name);";
 
         try
         {
-            command.Parameters.Add(Provider.SetParameter("id", id));
-            command.Parameters.Add(Provider.SetParameter("street_address", street_address));
-            command.Parameters.Add(Provider.SetParameter("postal_code", postal_code));
-            command.Parameters.Add(Provider.SetParameter("city", city));
-            command.Parameters.Add(Provider.SetParameter("state_province", state_province));
-            command.Parameters.Add(Provider.SetParameter("country_id", country_id));
+            command.Parameters.Add(Provider.SetParameter("name", name));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -152,23 +144,20 @@ public class Location
         }
     }
 
-    // UPDATE: Location
-    public string Update(int id, string street_address, string postal_code, string city, string state_province, string country_id)
+    // UPDATE: Region
+    public string Update(Region region)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        command.CommandText = "UPDATE locations SET street_address = @street_address, postal_code = @postal_code, city = @city, state_province = @state_province, country_id = @country_id WHERE id = @id;";
+        // Set the SQL command text to update the 'name' column in the 'regions' table with given id
+        command.CommandText = "UPDATE regions SET name = @name WHERE id = @id;";
 
         try
         {
-            command.Parameters.Add(Provider.SetParameter("id", id));
-            command.Parameters.Add(Provider.SetParameter("street_address", street_address));
-            command.Parameters.Add(Provider.SetParameter("postal_code", postal_code));
-            command.Parameters.Add(Provider.SetParameter("city", city));
-            command.Parameters.Add(Provider.SetParameter("state_province", state_province));
-            command.Parameters.Add(Provider.SetParameter("country_id", country_id));
+            command.Parameters.Add(Provider.SetParameter("id", region.Id));
+            command.Parameters.Add(Provider.SetParameter("name", region.Name));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -197,7 +186,7 @@ public class Location
         }
     }
 
-    // DELETE: Location
+    // DELETE: Region
     public string Delete(int id)
     {
         using var connection = Provider.GetConnection();
@@ -205,11 +194,10 @@ public class Location
 
         command.Connection = connection;
         // Set the SQL command text to delete rows from the 'regions' table with given id
-        command.CommandText = "DELETE FROM locations WHERE id = @id;";
+        command.CommandText = "DELETE FROM regions WHERE id = @id;";
 
         try
         {
-            // Create a new SQL parameter for the 'id' value
             command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
