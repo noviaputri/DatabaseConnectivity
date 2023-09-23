@@ -1,28 +1,29 @@
-﻿namespace BasicConnectivity;
+﻿using BasicConnectivity;
 
-public class History
+namespace DatabaseConnectivity.Models;
+
+public class Department
 {
-    public DateTime StartDate { get; set; }
-    public int EmployeeId { get; set; }
-    public DateTime EndDate { get; set; }
-    public int DepartmentId { get; set; }
-    public string JobId { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int LocationId { get; set; }
+    public int ManagerId { get; set; }
 
     public override string ToString()
     {
-        return $"{StartDate} - {EmployeeId} - {EndDate} - {DepartmentId} - {JobId}";
+        return $"{Id} - {Name} - {LocationId} - {ManagerId}";
     }
 
-    // GET ALL: History
-    public List<History> GetAll()
+    // GET ALL: Department
+    public List<Department> GetAll()
     {
-        var histories = new List<History>();
+        var departments = new List<Department>();
 
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        command.CommandText = "SELECT * FROM histories";
+        command.CommandText = "SELECT * FROM departments";
 
         try
         {
@@ -34,45 +35,43 @@ public class History
             {
                 while (reader.Read())
                 {
-                    histories.Add(new History
+                    departments.Add(new Department
                     {
-                        StartDate = reader.GetDateTime(0),
-                        EmployeeId = reader.GetInt32(1),
-                        EndDate = reader.IsDBNull(2) ? DateTime.Parse("1000-01-01") : reader.GetDateTime(2),
-                        //EndDate = reader.IsDBNull(2) ? (DateTime?)null : reader.GetDateTime(2),
-                        DepartmentId = reader.GetInt32(3),
-                        JobId = reader.GetString(4)
+                        Id = reader.GetInt32(0),
+                        Name = reader.GetString(1),
+                        LocationId = reader.GetInt32(2),
+                        ManagerId = reader.GetInt32(3)
                     });
                 }
                 reader.Close();
                 connection.Close();
 
-                return histories;
+                return departments;
             }
             reader.Close();
             connection.Close();
 
-            return new List<History>();
+            return new List<Department>();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
-        return new List<History>();
+        return new List<Department>();
     }
 
-    // GET BY ID: History
-    public History GetById(int employee_id)
+    // GET BY ID: Department
+    public Department GetById(int id)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        command.CommandText = "SELECT * FROM histories WHERE employee_id = @employee_id;";
+        command.CommandText = "SELECT * FROM departments WHERE id = @id;";
 
         try
         {
-            command.Parameters.Add(Provider.SetParameter("employee_id", employee_id));
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 
@@ -80,19 +79,18 @@ public class History
 
             if (reader.HasRows)
             {
-                History history = new History();
+                Department department = new Department();
 
                 while (reader.Read())
                 {
-                    history.StartDate = reader.GetDateTime(0);
-                    history.EmployeeId = reader.GetInt32(1);
-                    history.EndDate = reader.IsDBNull(2) ? DateTime.Parse("1000-01-01") : reader.GetDateTime(2);
-                    history.DepartmentId = reader.GetInt32(3);
-                    history.JobId = reader.GetString(4);
+                    department.Id = reader.GetInt32(0);
+                    department.Name = reader.GetString(1);
+                    department.LocationId = reader.GetInt32(2);
+                    department.ManagerId = reader.GetInt32(3);
                 }
                 reader.Close();
                 connection.Close();
-                return history;
+                return department;
             }
             else
             {
@@ -107,22 +105,21 @@ public class History
         }
     }
 
-    // INSERT: History
-    public string Insert(DateTime start_date, int employee_id, DateTime end_date, int department_id, string job_id)
+    // INSERT: Department
+    public string Insert(Department department)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        command.CommandText = "INSERT INTO histories (start_date, employee_id, end_date, department_id, job_id) VALUES (@start_date, @employee_id, @end_date, @department_id, @job_id);";
+        command.CommandText = "INSERT INTO departments (id, name, location_id, manager_id) VALUES (@id, @name, @location_id, @manager_id);";
 
         try
         {
-            command.Parameters.Add(Provider.SetParameter("start_date", start_date));
-            command.Parameters.Add(Provider.SetParameter("employee_id", employee_id));
-            command.Parameters.Add(Provider.SetParameter("end_date", end_date));
-            command.Parameters.Add(Provider.SetParameter("department_id", department_id));
-            command.Parameters.Add(Provider.SetParameter("job_id", job_id));
+            command.Parameters.Add(Provider.SetParameter("id", department.Id));
+            command.Parameters.Add(Provider.SetParameter("name", department.Name));
+            command.Parameters.Add(Provider.SetParameter("location_id", department.LocationId));
+            command.Parameters.Add(Provider.SetParameter("manager_id", department.ManagerId));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -149,22 +146,21 @@ public class History
         }
     }
 
-    // UPDATE: History
-    public string Update(int employee_id, DateTime end_date, int department_id, string job_id)
+    // UPDATE: Department
+    public string Update(Department department)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        command.CommandText = "UPDATE histories SET end_date = @end_date, department_id = @department_id, job_id = @job_id WHERE employee_id = @employee_id;";
+        command.CommandText = "UPDATE departments SET name = @name, location_id = @location_id, manager_id = @manager_id WHERE id = @id;";
 
         try
         {
-            //command.Parameters.Add(Provider.SetParameter("start_date", start_date));
-            command.Parameters.Add(Provider.SetParameter("employee_id", employee_id));
-            command.Parameters.Add(Provider.SetParameter("end_date", end_date));
-            command.Parameters.Add(Provider.SetParameter("department_id", department_id));
-            command.Parameters.Add(Provider.SetParameter("job_id", job_id));
+            command.Parameters.Add(Provider.SetParameter("id", department.Id));
+            command.Parameters.Add(Provider.SetParameter("name", department.Name));
+            command.Parameters.Add(Provider.SetParameter("location_id", department.LocationId));
+            command.Parameters.Add(Provider.SetParameter("manager_id", department.ManagerId));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -193,19 +189,19 @@ public class History
         }
     }
 
-    // DELETE: History
-    public string Delete(int employee_id)
+    // DELETE: Department
+    public string Delete(int id)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
 
         command.Connection = connection;
-        command.CommandText = "DELETE FROM histories WHERE employee_id = @employee_id;";
+        command.CommandText = "DELETE FROM departments WHERE id = @id;";
 
         try
         {
-            // Create a new SQL parameter for the 'employee_id' value
-            command.Parameters.Add(Provider.SetParameter("employee_id", employee_id));
+            // Create a new SQL parameter for the 'id' value
+            command.Parameters.Add(Provider.SetParameter("id", id));
 
             connection.Open();
 

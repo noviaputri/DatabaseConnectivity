@@ -1,4 +1,6 @@
-﻿namespace BasicConnectivity;
+﻿using BasicConnectivity;
+
+namespace DatabaseConnectivity.Models;
 
 public class Employee
 {
@@ -125,7 +127,7 @@ public class Employee
     }
 
     // INSERT: Employee
-    public string Insert(int id, string first_name, string last_name, string email, string phone_number, DateTime hire_date, int salary, decimal comission_pct , int manager_id, string job_id, int department_id)
+    public string Insert(Employee employee)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
@@ -135,17 +137,17 @@ public class Employee
 
         try
         {
-            command.Parameters.Add(Provider.SetParameter("id", id));
-            command.Parameters.Add(Provider.SetParameter("first_name", first_name));
-            command.Parameters.Add(Provider.SetParameter("last_name", last_name));
-            command.Parameters.Add(Provider.SetParameter("email", email));
-            command.Parameters.Add(Provider.SetParameter("phone_number", phone_number));
-            command.Parameters.Add(Provider.SetParameter("hire_date", hire_date));
-            command.Parameters.Add(Provider.SetParameter("salary", salary));
-            command.Parameters.Add(Provider.SetParameter("comission_pct", comission_pct));
-            command.Parameters.Add(Provider.SetParameter("manager_id", manager_id));
-            command.Parameters.Add(Provider.SetParameter("job_id", job_id));
-            command.Parameters.Add(Provider.SetParameter("department_id", department_id));
+            command.Parameters.Add(Provider.SetParameter("id", employee.Id));
+            command.Parameters.Add(Provider.SetParameter("first_name", employee.FirstName));
+            command.Parameters.Add(Provider.SetParameter("last_name", employee.LastName));
+            command.Parameters.Add(Provider.SetParameter("email", employee.Email));
+            command.Parameters.Add(Provider.SetParameter("phone_number", employee.PhoneNumber));
+            command.Parameters.Add(Provider.SetParameter("hire_date", employee.HireDate));
+            command.Parameters.Add(Provider.SetParameter("salary", employee.Salary));
+            command.Parameters.Add(Provider.SetParameter("comission_pct", employee.ComissionPct));
+            command.Parameters.Add(Provider.SetParameter("manager_id", employee.ManagerId));
+            command.Parameters.Add(Provider.SetParameter("job_id", employee.JobId));
+            command.Parameters.Add(Provider.SetParameter("department_id", employee.DepartmentId));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -173,7 +175,7 @@ public class Employee
     }
 
     // UPDATE: Employee
-    public string Update(int id, string first_name, string last_name, string email, string phone_number, DateTime hire_date, int salary, decimal comission_pct, int manager_id, string job_id, int department_id)
+    public string Update(Employee employee)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
@@ -183,17 +185,17 @@ public class Employee
 
         try
         {
-            command.Parameters.Add(Provider.SetParameter("id", id));
-            command.Parameters.Add(Provider.SetParameter("first_name", first_name));
-            command.Parameters.Add(Provider.SetParameter("last_name", last_name));
-            command.Parameters.Add(Provider.SetParameter("email", email));
-            command.Parameters.Add(Provider.SetParameter("phone_number", phone_number));
-            command.Parameters.Add(Provider.SetParameter("hire_date", hire_date));
-            command.Parameters.Add(Provider.SetParameter("salary", salary));
-            command.Parameters.Add(Provider.SetParameter("comission_pct", comission_pct));
-            command.Parameters.Add(Provider.SetParameter("manager_id", manager_id));
-            command.Parameters.Add(Provider.SetParameter("job_id", job_id));
-            command.Parameters.Add(Provider.SetParameter("department_id", department_id));
+            command.Parameters.Add(Provider.SetParameter("id", employee.Id));
+            command.Parameters.Add(Provider.SetParameter("first_name", employee.FirstName));
+            command.Parameters.Add(Provider.SetParameter("last_name", employee.LastName));
+            command.Parameters.Add(Provider.SetParameter("email", employee.Email));
+            command.Parameters.Add(Provider.SetParameter("phone_number", employee.PhoneNumber));
+            command.Parameters.Add(Provider.SetParameter("hire_date", employee.HireDate));
+            command.Parameters.Add(Provider.SetParameter("salary", employee.Salary));
+            command.Parameters.Add(Provider.SetParameter("comission_pct", employee.ComissionPct));
+            command.Parameters.Add(Provider.SetParameter("manager_id", employee.ManagerId));
+            command.Parameters.Add(Provider.SetParameter("job_id", employee.JobId));
+            command.Parameters.Add(Provider.SetParameter("department_id", employee.DepartmentId));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();

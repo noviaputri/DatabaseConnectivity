@@ -1,4 +1,6 @@
-﻿namespace BasicConnectivity;
+﻿using BasicConnectivity;
+
+namespace DatabaseConnectivity.Models;
 
 public class Job
 {
@@ -105,7 +107,7 @@ public class Job
     }
 
     // INSERT: Job
-    public string Insert(string id, string title, int min_salary, int max_salary)
+    public string Insert(Job job)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
@@ -115,10 +117,10 @@ public class Job
 
         try
         {
-            command.Parameters.Add(Provider.SetParameter("id", id));
-            command.Parameters.Add(Provider.SetParameter("title", title));
-            command.Parameters.Add(Provider.SetParameter("min_salary", min_salary));
-            command.Parameters.Add(Provider.SetParameter("max_salary", max_salary));
+            command.Parameters.Add(Provider.SetParameter("id", job.Id));
+            command.Parameters.Add(Provider.SetParameter("title", job.Title));
+            command.Parameters.Add(Provider.SetParameter("min_salary", job.MinSalary));
+            command.Parameters.Add(Provider.SetParameter("max_salary", job.MaxSalary));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -146,7 +148,7 @@ public class Job
     }
 
     // UPDATE: Job
-    public string Update(string id, string title, int min_salary, int max_salary)
+    public string Update(Job job)
     {
         using var connection = Provider.GetConnection();
         using var command = Provider.GetCommand();
@@ -156,10 +158,10 @@ public class Job
 
         try
         {
-            command.Parameters.Add(Provider.SetParameter("id", id));
-            command.Parameters.Add(Provider.SetParameter("title", title));
-            command.Parameters.Add(Provider.SetParameter("min_salary", min_salary));
-            command.Parameters.Add(Provider.SetParameter("max_salary", max_salary));
+            command.Parameters.Add(Provider.SetParameter("id", job.Id));
+            command.Parameters.Add(Provider.SetParameter("title", job.Title));
+            command.Parameters.Add(Provider.SetParameter("min_salary", job.MinSalary));
+            command.Parameters.Add(Provider.SetParameter("max_salary", job.MaxSalary));
 
             connection.Open();
             using var transaction = connection.BeginTransaction();

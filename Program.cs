@@ -1,5 +1,6 @@
 ﻿using DatabaseConnectivity;
 using DatabaseConnectivity.Controllers;
+using DatabaseConnectivity.Models;
 using DatabaseConnectivity.ViewModels;
 using DatabaseConnectivity.Views;
 
@@ -130,9 +131,12 @@ public class Program
         return true;
     }
 
-    /*
     public static bool MenuJob()
     {
+        var job = new Job();
+        var jobView = new JobView();
+        var jobController = new JobController(job, jobView);
+
         Console.WriteLine("1. Show All Data Job");
         Console.WriteLine("2. Get Job By Id");
         Console.WriteLine("3. Insert Job");
@@ -141,56 +145,23 @@ public class Program
         Console.WriteLine("6. Exit");
         Console.Write("Enter your choice: ");
         var input = Console.ReadLine();
-        var job = new Job();
 
         switch (input)
         {
             case "1":
-                var jobs = job.GetAll();
-                GeneralView.List(jobs, "jobs");
-                return true;
+                jobController.GetAll();
+                break;
             case "2":
-                Console.WriteLine("Enter Job Id : ");
-                string JobId = Console.ReadLine();
-                Job result = job.GetById(JobId);
-                string id = result.Id;
-                string title = result.Title;
-                int min_salary = result.MinSalary;
-                int max_salary = result.MaxSalary;
-                Console.WriteLine($"Id: {id}, Title : {title}, Min Salary : {min_salary}, Max Salary : {max_salary}");
+                jobController.GetById();
                 break;
             case "3":
-                Console.WriteLine("Enter Job Id to Insert : ");
-                string JobIdInsert = Console.ReadLine();
-                Console.WriteLine("Enter Title to Insert : ");
-                string JobTitleInsert = Console.ReadLine();
-                Console.WriteLine("Enter Min Salary to Insert : ");
-                int JobMinSalaryInsert = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Max Salary to Insert : ");
-                int JobMaxSalaryInsert = Convert.ToInt32(Console.ReadLine());
-                var insertResult = job.Insert(JobIdInsert, JobTitleInsert, JobMinSalaryInsert, JobMaxSalaryInsert);
-                int.TryParse(insertResult, out int resultInsert);
-                GeneralView.PerformInsert(resultInsert);
+                jobController.Insert();
                 break;
             case "4":
-                Console.WriteLine("Enter Job Id to Update : ");
-                string JobIdUpdate = Console.ReadLine();
-                Console.WriteLine("Enter Title to Update : ");
-                string JobTitleUpdate = Console.ReadLine();
-                Console.WriteLine("Enter Min Salary to Update : ");
-                int JobMinSalaryUpdate = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Max Salary to Update : ");
-                int JobMaxSalaryUpdate = Convert.ToInt32(Console.ReadLine());
-                var updateResult = job.Update(JobIdUpdate, JobTitleUpdate, JobMinSalaryUpdate, JobMaxSalaryUpdate);
-                int.TryParse(updateResult, out int resultUpdate);
-                GeneralView.PerformUpdate(resultUpdate);
+                jobController.Update();
                 break;
             case "5":
-                Console.WriteLine("Enter Job Id to Delete : ");
-                string JobIdDelete = Console.ReadLine();
-                var deleteResult = job.Delete(JobIdDelete);
-                int.TryParse(deleteResult, out int resultDelete);
-                GeneralView.PerformDelete(resultDelete);
+                jobController.Delete();
                 break;
             case "6":
                 return false;
@@ -203,6 +174,10 @@ public class Program
 
     public static bool MenuDepartment()
     {
+        var department = new Department();
+        var departmentView = new DepartmentView();
+        var departmentController = new DepartmentController(department, departmentView);
+
         Console.WriteLine("1. Show All Data Department");
         Console.WriteLine("2. Get Department By Id");
         Console.WriteLine("3. Insert Department");
@@ -211,56 +186,23 @@ public class Program
         Console.WriteLine("6. Exit");
         Console.Write("Enter your choice: ");
         var input = Console.ReadLine();
-        var department = new Department();
 
         switch (input)
         {
             case "1":
-                var departments = department.GetAll();
-                GeneralView.List(departments, "departments");
-                return true;
+                departmentController.GetAll();
+                break;
             case "2":
-                Console.WriteLine("Enter Department Id : ");
-                int DepartmentId = Convert.ToInt32(Console.ReadLine());
-                Department result = department.GetById(DepartmentId);
-                int id = result.Id;
-                string name = result.Name;
-                int location_id = result.LocationId;
-                int manager_id = result.ManagerId;
-                Console.WriteLine($"Id: {id}, Name : {name}, Location Id : {location_id}, Manager Id : {manager_id}");
+                departmentController.GetById();
                 break;
             case "3":
-                Console.WriteLine("Enter Department Id to Insert : ");
-                int DepartmentIdInsert = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Name to Insert : ");
-                string DepartmentNameInsert = Console.ReadLine();
-                Console.WriteLine("Enter Location Id to Insert : ");
-                int DepartmentLocationIdInsert = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Manager Id to Insert : ");
-                int DepartmentManagerIdInsert = Convert.ToInt32(Console.ReadLine());
-                var insertResult = department.Insert(DepartmentIdInsert, DepartmentNameInsert, DepartmentLocationIdInsert, DepartmentManagerIdInsert);
-                int.TryParse(insertResult, out int resultInsert);
-                GeneralView.PerformInsert(resultInsert);
+                departmentController.Insert();
                 break;
             case "4":
-                Console.WriteLine("Enter Department Id to Insert : ");
-                int DepartmentIdUpdate = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Name to Insert : ");
-                string DepartmentNameUpdate = Console.ReadLine();
-                Console.WriteLine("Enter Location Id to Insert : ");
-                int DepartmentLocationIdUpdate = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Manager Id to Insert : ");
-                int DepartmentManagerIdUpdate = Convert.ToInt32(Console.ReadLine());
-                var updateResult = department.Update(DepartmentIdUpdate, DepartmentNameUpdate, DepartmentLocationIdUpdate, DepartmentManagerIdUpdate);
-                int.TryParse(updateResult, out int resultUpdate);
-                GeneralView.PerformUpdate(resultUpdate);
+                departmentController.Update();
                 break;
             case "5":
-                Console.WriteLine("Enter Department Id to Delete : ");
-                int DepartmentIdDelete = Convert.ToInt32(Console.ReadLine());
-                var deleteResult = department.Delete(DepartmentIdDelete);
-                int.TryParse(deleteResult, out int resultDelete);
-                GeneralView.PerformDelete(resultDelete);
+                departmentController.Delete();
                 break;
             case "6":
                 return false;
@@ -273,6 +215,10 @@ public class Program
 
     public static bool MenuEmployee()
     {
+        var employee = new Employee();
+        var employeeView = new EmployeeView();
+        var employeeController = new EmployeeController(employee, employeeView);
+
         Console.WriteLine("1. Show All Data Employee");
         Console.WriteLine("2. Get Employee By Id");
         Console.WriteLine("3. Insert Employee");
@@ -281,93 +227,23 @@ public class Program
         Console.WriteLine("6. Exit");
         Console.Write("Enter your choice: ");
         var input = Console.ReadLine();
-        var employee = new Employee();
 
         switch (input)
         {
             case "1":
-                var employees = employee.GetAll();
-                GeneralView.List(employees, "employees");
-                return true;
+                employeeController.GetAll();
+                break;
             case "2":
-                Console.WriteLine("Enter Employee Id : ");
-                int EmployeeId = Convert.ToInt32(Console.ReadLine());
-                Employee result = employee.GetById(EmployeeId);
-                int id = result.Id;
-                string first_name = result.FirstName;
-                string last_name = result.LastName;
-                string email = result.Email;
-                string phone_number = result.PhoneNumber;
-                DateTime hire_date = result.HireDate;
-                int salary = result.Salary;
-                decimal comission_pct = result.ComissionPct;
-                int manager_id = result.ManagerId;
-                string job_id = result.JobId;
-                int department_id = result.DepartmentId;
-                Console.WriteLine($"Id: {id}, First Name : {first_name}, Last Name : {last_name}, " +
-                            $"Email : {email}, Phone Number : {phone_number}, Hire Date : {hire_date}, Salary : {salary}," +
-                            $"Comission PCT : {comission_pct}, Manager Id : {manager_id}, Job Id : {job_id}, Department Id : {department_id}");
+                employeeController.GetById();
                 break;
             case "3":
-                Console.WriteLine("Enter Employee Id to Insert : ");
-                int EmployeeIdInsert = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter First Name to Insert : ");
-                string EmployeeFirstNameInsert = Console.ReadLine();
-                Console.WriteLine("Enter Last Name to Insert : ");
-                string EmployeeLastNameInsert = Console.ReadLine();
-                Console.WriteLine("Enter Email to Insert : ");
-                string EmployeeEmailInsert = Console.ReadLine();
-                Console.WriteLine("Enter Phone Number to Insert : ");
-                string EmployeePhoneInsert = Console.ReadLine();
-                Console.WriteLine("Enter Hire Date to Insert : ");
-                DateTime EmployeeHireDateInsert = Convert.ToDateTime(Console.ReadLine());
-                Console.WriteLine("Enter Salary to Insert : ");
-                int EmployeeSalaryInsert = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Comission PCT to Insert : ");
-                decimal EmployeeComissionInsert = Convert.ToDecimal(Console.ReadLine());
-                Console.WriteLine("Enter Manager Id to Insert : ");
-                int EmployeeManagerIdInsert = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Job Id to Insert : ");
-                string EmployeeJobIdInsert = Console.ReadLine();
-                Console.WriteLine("Enter Department Id to Insert : ");
-                int EmployeeDepartmentIdInsert = Convert.ToInt32(Console.ReadLine());
-                var insertResult = employee.Insert(EmployeeIdInsert, EmployeeFirstNameInsert, EmployeeLastNameInsert, EmployeeEmailInsert, EmployeePhoneInsert, EmployeeHireDateInsert, EmployeeSalaryInsert, EmployeeComissionInsert, EmployeeManagerIdInsert, EmployeeJobIdInsert, EmployeeDepartmentIdInsert);
-                int.TryParse(insertResult, out int resultInsert);
-                GeneralView.PerformInsert(resultInsert);
+                employeeController.Insert();
                 break;
             case "4":
-                Console.WriteLine("Enter Employee Id to Insert : ");
-                int EmployeeIdUpdate = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter First Name to Insert : ");
-                string EmployeeFirstNameUpdate = Console.ReadLine();
-                Console.WriteLine("Enter Last Name to Insert : ");
-                string EmployeeLastNameUpdate = Console.ReadLine();
-                Console.WriteLine("Enter Email to Insert : ");
-                string EmployeeEmailUpdate = Console.ReadLine();
-                Console.WriteLine("Enter Phone Number to Insert : ");
-                string EmployeePhoneUpdate = Console.ReadLine();
-                Console.WriteLine("Enter Hire Date to Insert : ");
-                DateTime EmployeeHireDateUpdate = Convert.ToDateTime(Console.ReadLine());
-                Console.WriteLine("Enter Salary to Insert : ");
-                int EmployeeSalaryUpdate = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Comission PCT to Insert : ");
-                decimal EmployeeComissionUpdate = Convert.ToDecimal(Console.ReadLine());
-                Console.WriteLine("Enter Manager Id to Insert : ");
-                int EmployeeManagerIdUpdate = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Job Id to Insert : ");
-                string EmployeeJobIdUpdate = Console.ReadLine();
-                Console.WriteLine("Enter Department Id to Insert : ");
-                int EmployeeDepartmentIdUpdate = Convert.ToInt32(Console.ReadLine());
-                var updateResult = employee.Update(EmployeeIdUpdate, EmployeeFirstNameUpdate, EmployeeLastNameUpdate, EmployeeEmailUpdate, EmployeePhoneUpdate, EmployeeHireDateUpdate, EmployeeSalaryUpdate, EmployeeComissionUpdate, EmployeeManagerIdUpdate, EmployeeJobIdUpdate, EmployeeDepartmentIdUpdate);
-                int.TryParse(updateResult, out int resultUpdate);
-                GeneralView.PerformUpdate(resultUpdate);
+                employeeController.Update();
                 break;
             case "5":
-                Console.WriteLine("Enter Employee Id to Delete : ");
-                int EmployeeIdDelete = Convert.ToInt32(Console.ReadLine());
-                var deleteResult = employee.Delete(EmployeeIdDelete);
-                int.TryParse(deleteResult, out int resultDelete);
-                GeneralView.PerformDelete(resultDelete);
+                employeeController.Delete();
                 break;
             case "6":
                 return false;
@@ -380,6 +256,10 @@ public class Program
 
     public static bool MenuHistory()
     {
+        var history = new History();
+        var historyView = new HistoryView();
+        var historyController = new HistoryController(history, historyView);
+
         Console.WriteLine("1. Show All Data History");
         Console.WriteLine("2. Get History By Employee Id");
         Console.WriteLine("3. Insert History");
@@ -388,59 +268,23 @@ public class Program
         Console.WriteLine("6. Exit");
         Console.Write("Enter your choice: ");
         var input = Console.ReadLine();
-        var history = new History();
 
         switch (input)
         {
             case "1":
-                var histories = history.GetAll();
-                GeneralView.List(histories, "histories");
-                return true;
+                historyController.GetAll();
+                break;
             case "2":
-                Console.WriteLine("Enter Employee Id : ");
-                int EmployeeId = Convert.ToInt32(Console.ReadLine());
-                History result = history.GetById(EmployeeId);
-                DateTime start_date = result.StartDate;
-                int employee_id = result.EmployeeId;
-                DateTime end_date = result.EndDate;
-                int department_id = result.DepartmentId;
-                string job_id = result.JobId;
-                Console.WriteLine($"Start Date : {start_date}, Employee Id : {employee_id}, End Date : {end_date}, Department Id : {department_id}, Job Id : {job_id}");
+                historyController.GetById();
                 break;
             case "3":
-                Console.WriteLine("Enter Start Date to Insert : ");
-                DateTime HistoryStartDateInsert = Convert.ToDateTime(Console.ReadLine());
-                Console.WriteLine("Enter Employee Id to Insert : ");
-                int HistoryEmployeeIdInsert = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter End Date to Insert : ");
-                DateTime HistoryEndDateInsert = Convert.ToDateTime(Console.ReadLine());
-                Console.WriteLine("Enter Department Id to Insert : ");
-                int HistoryDepartmentIdInsert = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Job Id to Insert : ");
-                string HistoryJobIdInsert = Console.ReadLine();
-                var insertResult = history.Insert(HistoryStartDateInsert, HistoryEmployeeIdInsert, HistoryEndDateInsert, HistoryDepartmentIdInsert, HistoryJobIdInsert);
-                int.TryParse(insertResult, out int resultInsert);
-                GeneralView.PerformInsert(resultInsert);
+                historyController.Insert();
                 break;
             case "4":
-                Console.WriteLine("Enter Employee Id to Update : ");
-                int HistoryEmployeeIdUpdate = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter End Date to Update : ");
-                DateTime HistoryEndDateUpdate = Convert.ToDateTime(Console.ReadLine());
-                Console.WriteLine("Enter Department Id to Update : ");
-                int HistoryDepartmentIdUpdate = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Job Id to Update : ");
-                string HistoryJobIdUpdate = Console.ReadLine();
-                var updateResult = history.Update(HistoryEmployeeIdUpdate, HistoryEndDateUpdate, HistoryDepartmentIdUpdate, HistoryJobIdUpdate);
-                int.TryParse(updateResult, out int resultUpdate);
-                GeneralView.PerformUpdate(resultUpdate);
+                historyController.Update();
                 break;
             case "5":
-                Console.WriteLine("Enter Employee Id to Delete : ");
-                int HistoryEmployeeIdDelete = Convert.ToInt32(Console.ReadLine());
-                var deleteResult = history.Delete(HistoryEmployeeIdDelete);
-                int.TryParse(deleteResult, out int resultDelete);
-                GeneralView.PerformDelete(resultDelete);
+                historyController.Delete();
                 break;
             case "6":
                 return false;
@@ -449,7 +293,7 @@ public class Program
                 break;
         }
         return true;
-    }*/
+    }
 
     static void AskToGoBackToMenu()
     {
@@ -496,22 +340,22 @@ public class Program
                 break;
             case "4":
                 Console.Clear();
-                //MenuJob();
+                MenuJob();
                 AskToGoBackToMenu();
                 break;
             case "5":
                 Console.Clear();
-                //MenuDepartment();
+                MenuDepartment();
                 AskToGoBackToMenu();
                 break;
             case "6":
                 Console.Clear();
-                //MenuEmployee();
+                MenuEmployee();
                 AskToGoBackToMenu();
                 break;
             case "7":
                 Console.Clear();
-                //MenuHistory();
+                MenuHistory();
                 AskToGoBackToMenu();
                 break;
             case "8":
